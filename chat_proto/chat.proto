@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+package chat;
+
+message ChatMessage {
+  string sender = 1;     // <- ANTES: "from"
+  string room   = 2;
+  string text   = 3;
+  int64  timestamp = 4;  // epoch ms
+}
+
+message JoinRequest {
+  string user = 1;
+  string room = 2;
+}
+
+message JoinReply {
+  bool ok = 1;
+  string message = 2;
+}
+
+message HistoryRequest {
+  string room = 1;
+  int32 limit = 2; // p. ej., 20
+}
+
+service ChatService {
+  rpc Join(JoinRequest) returns (JoinReply);                   // Unario
+  rpc Chat(stream ChatMessage) returns (stream ChatMessage);   // Bidireccional
+  rpc History(HistoryRequest) returns (stream ChatMessage);    // Server-streaming
+}
