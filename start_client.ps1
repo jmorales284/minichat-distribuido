@@ -1,5 +1,5 @@
 # Script para iniciar el cliente
-# Uso: .\start_client.ps1 <usuario> <sala> [host:puerto]
+# Uso: .\start_client.ps1 <usuario> <sala> [servidor:puerto]
 param(
     [Parameter(Mandatory=$true)]
     [string]$Usuario,
@@ -8,9 +8,9 @@ param(
     [string]$Sala,
     
     [Parameter(Mandatory=$false)]
-    [string]$Host = "localhost:50051"
+    [string]$Servidor = "localhost:50051"
 )
 
 $env:PYTHONPATH = "$PSScriptRoot"
-python client/client.py $Usuario $Sala $Host
+python client/client.py $Usuario $Sala $Servidor
 

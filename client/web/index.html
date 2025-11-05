@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mini-Chat Distribuido - gRPC</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <!-- Pantalla de Login -->
+    <div id="login-screen" class="screen active">
+        <div class="login-container">
+            <div class="login-card">
+                <h1>💬 Mini-Chat Distribuido</h1>
+                <p class="subtitle">Chat en tiempo real con gRPC</p>
+                
+                <form id="login-form">
+                    <div class="form-group">
+                        <label for="username">Usuario</label>
+                        <input type="text" id="username" name="username" required 
+                               placeholder="Ingresa tu nombre" autocomplete="off">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="room">Sala</label>
+                        <input type="text" id="room" name="room" required 
+                               placeholder="Nombre de la sala" autocomplete="off">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="server-host">Servidor gRPC</label>
+                        <div class="input-group">
+                            <input type="text" id="server-host" name="server-host" 
+                                   value="localhost" placeholder="localhost" autocomplete="off">
+                            <span class="separator">:</span>
+                            <input type="number" id="server-port" name="server-port" 
+                                   value="50051" placeholder="50051" min="1" max="65535">
+                        </div>
+                    </div>
+                    
+                    <div id="error-message" class="error-message"></div>
+                    
+                    <button type="submit" class="btn btn-primary">
+                        <span>Conectar</span>
+                        <span class="spinner" id="login-spinner"></span>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pantalla de Chat -->
+    <div id="chat-screen" class="screen">
+        <div class="chat-container">
+            <!-- Header -->
+            <div class="chat-header">
+                <div class="header-info">
+                    <h2 id="room-name"># Sala</h2>
+                    <span class="user-badge" id="user-badge">Usuario</span>
+                </div>
+                <button id="disconnect-btn" class="btn btn-secondary">Desconectar</button>
+            </div>
+
+            <!-- Área de mensajes -->
+            <div class="messages-container" id="messages-container">
+                <div class="message system" id="welcome-message">
+                    <div class="message-content">
+                        <p>Conectando al servidor...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Input de mensaje -->
+            <div class="message-input-container">
+                <div class="input-wrapper">
+                    <input type="text" id="message-input" 
+                           placeholder="Escribe un mensaje..." 
+                           autocomplete="off" disabled>
+                    <button id="send-btn" class="btn btn-send" disabled>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="22" y1="2" x2="11" y2="13"></line>
+                            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Status bar -->
+            <div class="status-bar">
+                <span id="connection-status" class="status-indicator">
+                    <span class="status-dot"></span>
+                    Desconectado
+                </span>
+                <span id="message-count">0 mensajes</span>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>
+
