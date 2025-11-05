@@ -241,17 +241,6 @@ Ver `tools/sniff_grpc.py` para un script básico de sniffing (requiere permisos 
 - **Concurrencia**: ThreadPoolExecutor con 32 workers
 - **Historial**: Máximo 500 mensajes por sala en memoria
 
-## 🔧 Troubleshooting
-
-**Error: "ModuleNotFoundError: No module named 'chat_proto'"**
-- Asegúrate de establecer PYTHONPATH antes de ejecutar
-- O ejecuta desde el directorio raíz del proyecto
-
-**Error: "Address already in use"**
-- El puerto 50051 está ocupado
-- Cambia el puerto en `server/server.py` línea 156
-
-**Los mensajes no se reciben en tiempo real**
 - Verifica que el servidor esté corriendo
 - Verifica que los clientes estén en la misma sala
 - Revisa los logs del servidor para ver errores
