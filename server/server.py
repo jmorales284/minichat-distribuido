@@ -43,6 +43,20 @@ def push_history(room: str, msg: chat_pb2.ChatMessage):
         if len(_history[room]) > MAX_HISTORY:
             _history[room] = _history[room][-MAX_HISTORY:]
 
+def log_message(action: str, room: str, user: str = "", text: str = ""):
+    """Log de mensajes del servidor para demostración"""
+    timestamp = time.strftime("%H:%M:%S", time.localtime())
+    if action == "RECEIVE":
+        print(f"[{timestamp}] [SERVIDOR] ← RECIBIDO de {user}@{room}: {text}")
+    elif action == "BROADCAST":
+        with _lock:
+            count = len(_rooms.get(room, []))
+        print(f"[{timestamp}] [SERVIDOR] → RETRANSMITIENDO a {count} cliente(s) en #{room}: {text}")
+    elif action == "JOIN":
+        print(f"[{timestamp}] [SERVIDOR] ✓ {user} se unió a #{room}")
+    elif action == "LEAVE":
+        print(f"[{timestamp}] [SERVIDOR] ✗ {user} salió de #{room}")
+
 def broadcast(room: str, msg: chat_pb2.ChatMessage):
     with _lock:
         subs = list(_rooms.get(room, []))
@@ -92,6 +106,7 @@ class ChatService(chat_pb2_grpc.ChatServiceServicer):
                             _rooms[room].add(sub)
 
                         # Mensaje de sistema: join
+                        log_message("JOIN", room, user)
                         join_msg = chat_pb2.ChatMessage(
                             sender="system",
                             room=room,
@@ -105,6 +120,7 @@ class ChatService(chat_pb2_grpc.ChatServiceServicer):
                     # Mensaje normal
                     text = (incoming.text or "").strip()
                     if text:
+                        log_message("RECEIVE", room, user, text)
                         server_msg = chat_pb2.ChatMessage(
                             sender=user,
                             room=room,
@@ -113,6 +129,7 @@ class ChatService(chat_pb2_grpc.ChatServiceServicer):
                         )
                         push_history(room, server_msg)
                         broadcast(room, server_msg)
+                        log_message("BROADCAST", room, user, text)
             finally:
                 recv_done.set()
 
@@ -141,6 +158,7 @@ class ChatService(chat_pb2_grpc.ChatServiceServicer):
                 with _lock:
                     if sub.room in _rooms and sub in _rooms[sub.room]:
                         _rooms[sub.room].remove(sub)
+                log_message("LEAVE", sub.room, sub.user)
                 leave = chat_pb2.ChatMessage(
                     sender="system",
                     room=sub.room,
